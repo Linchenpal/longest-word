@@ -1,0 +1,32 @@
+# .python-ci.yml
+
+name: basic CI # workflw name, it shown in the Ds github actions tab
+
+# triggers the workflow on push or pull request events
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+# jobs definition
+jobs: # group all tasks
+  build-and-run-pytest:
+    runs-on: ubuntu-latest # env set up, run i  a unbuntu vm
+    steps:
+    # First step (unnamed here) is to checkout the branch that triggered the event
+    - uses: actions/checkout@v4 # clones the repo into workflows VM
+    # Second step: install python 3.12
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        poetry install
+    - name: Run tests
+      run: |
+        poetry run pytest
